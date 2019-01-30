@@ -231,13 +231,14 @@ squashfs() {
 # directory must be already mounted before chrooting in
 mount_bind() {
 	step "Mounting ROOTFS"
-	mount --bind ${ROOTFS_DIR} ${ROOTFS_DIR}
+	mount --bind "${ROOTFS_DIR}" "${ROOTFS_DIR}"
+	trap umount_bind EXIT
 	unstep
 }
 
 umount_bind() {
 	step "Unmounting ROOTFS"
-	umount ${ROOTFS_DIR}
+	umount "${ROOTFS_DIR}"
 	unstep
 }
 
@@ -276,7 +277,6 @@ clean() {
 
 	step "Cleaning ${IMAGE_NAME}"
 
-	umount_bind
 	run rm -rf `dirname "${ROOTFS_DIR}"`
 	run rm -rf "${IMAGES_DIR}/${IMAGE_NAME}.squashfs"
 	run rm -rf "${IMAGES_DIR}/${IMAGE_NAME}_*"
